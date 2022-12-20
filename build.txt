@@ -1,0 +1,3 @@
+displayName = Dash Keybind +
+author = xeaal
+version = 1.0
