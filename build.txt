@@ -1,3 +1,5 @@
 displayName = Dash Keybind +
 author = xeaal
-version = 1.0
+version = 1.0.0.3
+includeSource = true
+side = Client
