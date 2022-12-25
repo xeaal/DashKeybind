@@ -60,12 +60,12 @@ namespace DashKeybind {
 		public static ModKeybind GSDash;
 		public override void Load() {
 			if (!ModLoader.HasMod("CalamityMod")) return;
-			GSDash = KeybindLoader.RegisterKeybind (Mod, "God Slayer Dash", "Mouse3");
+//			GSDash = KeybindLoader.RegisterKeybind (Mod, "God Slayer Dash", "Mouse3");
 			PatchCalamity();
 		}
 		private static void PatchCalamity() {
 			HookEndpointManager.Add(typeof(CalamityMod.CalPlayer.CalamityPlayer).GetMethod("HandleHorizontalDash", BindingFlags.Public | BindingFlags.Instance), HDashPatch);
-			HookEndpointManager.Add(typeof(CalamityMod.CalPlayer.CalamityPlayer).GetMethod("HandleOmnidirectionalDash", BindingFlags.Public | BindingFlags.Instance), ODDashPatch);
+//			HookEndpointManager.Add(typeof(CalamityMod.CalPlayer.CalamityPlayer).GetMethod("HandleOmnidirectionalDash", BindingFlags.Public | BindingFlags.Instance), ODDashPatch);
 		}
 		private delegate bool orig_HandleHorizontalDash(CalamityMod.CalPlayer.CalamityPlayer self, out CalamityMod.Enums.DashDirection direction);
 		private static bool HDashPatch(orig_HandleHorizontalDash orig, CalamityMod.CalPlayer.CalamityPlayer self, out CalamityMod.Enums.DashDirection direction) {
@@ -93,7 +93,7 @@ namespace DashKeybind {
 			}
 			return result;
 		}
-		private delegate bool orig_HandleOmnidirectionalDash(CalamityMod.CalPlayer.CalamityPlayer self, out CalamityMod.Enums.DashDirection direction);
+/*		private delegate bool orig_HandleOmnidirectionalDash(CalamityMod.CalPlayer.CalamityPlayer self, out CalamityMod.Enums.DashDirection direction);
 		private static bool ODDashPatch(orig_HandleOmnidirectionalDash orig, CalamityMod.CalPlayer.CalamityPlayer self, out CalamityMod.Enums.DashDirection direction) {
 			direction = CalamityMod.Enums.DashDirection.Directionless;
 			bool result = false;
@@ -137,6 +137,6 @@ namespace DashKeybind {
 			}
 			Main.NewText(direction);
 			return result;
-		}
+		}*/
 	}
 }
