@@ -62,6 +62,7 @@ namespace DashKeybind {
 		public override void Load() {
 			if (!ModLoader.HasMod("CalamityMod")) return;
 			PatchCalamity();
+
 		}
 		private static void PatchCalamity() {
 			HookEndpointManager.Add(typeof(CalamityMod.CalPlayer.CalamityPlayer).GetMethod("HandleHorizontalDash", BindingFlags.Public | BindingFlags.Instance), HDashPatch);
@@ -140,9 +141,9 @@ namespace DashKeybind {
 		}
 		private static void ODDashCheckPatch(ILContext il) {
 			var c = new ILCursor(il);
-			if (!c.TryGotoNext(MoveType.Before, i => i.MatchLdfld(typeof(CalamityMod.CalPlayer.CalamityPlayer), "godSlayer")))
-				throw new Exception("GodSlayer field not found");
-			if (!c.TryGotoNext(MoveType.Before, i => i.MatchLdarg(0)))
+			if (!c.TryGotoNext(MoveType.Before, i => i.MatchLdfld(typeof(Player), "controlUp")))
+				throw new Exception("ControlUp field not found");
+			if (!c.TryGotoPrev(MoveType.Before, i => i.MatchLdarg(0)))
 				throw new Exception("Ldarg field not found");
 			c.RemoveRange(16);
 		}
