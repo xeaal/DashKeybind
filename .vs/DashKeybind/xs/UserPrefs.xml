@@ -1,0 +1,24 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workbench ActiveDocument="DashKeybind.cs">
+    <Files>
+      <File FileName="DashKeybind.cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="DashKeybind" expanded="True">
+            <Node name="DashKeybind" expanded="True">
+              <Node name="DashKeybind.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

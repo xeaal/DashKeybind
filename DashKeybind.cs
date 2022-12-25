@@ -4,6 +4,8 @@ using Terraria;
 using Terraria.GameInput;
 using Terraria.ModLoader;
 using MonoMod.RuntimeDetour.HookGen;
+using MonoMod.Cil;
+using Mono;
 
 namespace DashKeybind {
 	public class DashKeybind : Mod {
@@ -57,15 +59,14 @@ namespace DashKeybind {
 	}
 	[JITWhenModsEnabled("CalamityMod")]
 	public sealed class CalamityDetour : ModSystem {
-		public static ModKeybind GSDash;
 		public override void Load() {
 			if (!ModLoader.HasMod("CalamityMod")) return;
-//			GSDash = KeybindLoader.RegisterKeybind (Mod, "God Slayer Dash", "Mouse3");
 			PatchCalamity();
 		}
 		private static void PatchCalamity() {
 			HookEndpointManager.Add(typeof(CalamityMod.CalPlayer.CalamityPlayer).GetMethod("HandleHorizontalDash", BindingFlags.Public | BindingFlags.Instance), HDashPatch);
-//			HookEndpointManager.Add(typeof(CalamityMod.CalPlayer.CalamityPlayer).GetMethod("HandleOmnidirectionalDash", BindingFlags.Public | BindingFlags.Instance), ODDashPatch);
+			HookEndpointManager.Add(typeof(CalamityMod.CalPlayer.CalamityPlayer).GetMethod("HandleOmnidirectionalDash", BindingFlags.Public | BindingFlags.Instance), ODDashPatch);
+			HookEndpointManager.Modify(typeof(CalamityMod.CalPlayer.CalamityPlayer).GetMethod("ProcessTriggers", BindingFlags.Public | BindingFlags.Instance), ODDashCheckPatch);
 		}
 		private delegate bool orig_HandleHorizontalDash(CalamityMod.CalPlayer.CalamityPlayer self, out CalamityMod.Enums.DashDirection direction);
 		private static bool HDashPatch(orig_HandleHorizontalDash orig, CalamityMod.CalPlayer.CalamityPlayer self, out CalamityMod.Enums.DashDirection direction) {
@@ -93,11 +94,11 @@ namespace DashKeybind {
 			}
 			return result;
 		}
-/*		private delegate bool orig_HandleOmnidirectionalDash(CalamityMod.CalPlayer.CalamityPlayer self, out CalamityMod.Enums.DashDirection direction);
+		private delegate bool orig_HandleOmnidirectionalDash(CalamityMod.CalPlayer.CalamityPlayer self, out CalamityMod.Enums.DashDirection direction);
 		private static bool ODDashPatch(orig_HandleOmnidirectionalDash orig, CalamityMod.CalPlayer.CalamityPlayer self, out CalamityMod.Enums.DashDirection direction) {
 			direction = CalamityMod.Enums.DashDirection.Directionless;
 			bool result = false;
-			if (CalamityDetour.GSDash.JustPressed) {
+			if (self.godSlayerDashHotKeyPressed) {
 				if (!(self.Player.controlLeft && self.Player.controlRight) && (self.Player.controlUp || self.Player.controlDown)) {
 					if (self.Player.controlUp)
 						direction = CalamityMod.Enums.DashDirection.Up;
@@ -135,8 +136,15 @@ namespace DashKeybind {
 						break;
 				}
 			}
-			Main.NewText(direction);
 			return result;
-		}*/
+		}
+		private static void ODDashCheckPatch(ILContext il) {
+			var c = new ILCursor(il);
+			if (!c.TryGotoNext(MoveType.Before, i => i.MatchLdfld(typeof(CalamityMod.CalPlayer.CalamityPlayer), "godSlayer")))
+				throw new Exception("GodSlayer field not found");
+			if (!c.TryGotoNext(MoveType.Before, i => i.MatchLdarg(0)))
+				throw new Exception("Ldarg field not found");
+			c.RemoveRange(16);
+		}
 	}
 }

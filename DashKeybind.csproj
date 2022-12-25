@@ -16,6 +16,9 @@
     <Reference Include="MonoMod.RuntimeDetour.HookGen">
       <HintPath>..\..\..\..\..\..\Desktop\MonoMod\MonoMod.RuntimeDetour.HookGen.dll</HintPath>
     </Reference>
+    <Reference Include="MonoMod">
+      <HintPath>..\..\..\..\..\..\Desktop\MonoMod\MonoMod.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Remove="CalamityMod" />

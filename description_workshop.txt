@@ -1,6 +1,6 @@
-This mod adds a dash keybind and disables it's initial double tap behaviour, now with Calamity support
+This mod adds a dash keybind and disables it's initial double tap behaviour, now with full Calamity support
 
-The mod overwrites vanilla and Calamity Mod horizontal dash invokation system without imitating double tap, so this should work flawlessly
+The mod overwrites vanilla and Calamity Mod dash invokation system without imitating double tap, so this should work flawlessly. It also changes the logic of Omnidirectional dashes with God Slayer armor from Calamity Mod so that you can dodge without moving in direction you're facing at the moment. Not sure if that is useful, but I don't think that would cause any inconveniences. Omnidirectional dashes still use hotkey provided for it by Calamity
 
 All of the source code is available here: https://github.com/xeaal/DashKeybind
 

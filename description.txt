@@ -1,1 +1,1 @@
-This mod adds a dash keybind and disables it's initial double tap behaviour!
+This mod adds a dash keybind and disables it's initial double tap behaviour, now with full Calamity support
