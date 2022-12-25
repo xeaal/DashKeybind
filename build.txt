@@ -1,4 +1,4 @@
-displayName = Dash Keybind +
+displayName = Dash Hotkey
 author = xeaal
 version = 1.1
 includeSource = true
