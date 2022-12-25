@@ -1,6 +1,6 @@
 displayName = Dash Keybind +
 author = xeaal
-version = 1.0.1
+version = 1.0.1.1
 includeSource = true
 side = Client
 weakReferences = CalamityMod

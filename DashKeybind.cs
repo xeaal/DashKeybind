@@ -7,10 +7,7 @@ using MonoMod.RuntimeDetour.HookGen;
 
 namespace DashKeybind {
 	public class DashKeybind : Mod {
-		public static ModKeybind Dash {
-			get;
-			private set;
-		}
+		public static ModKeybind Dash;
 		private void VanillaDashPatch(On.Terraria.Player.orig_DoCommonDashHandle orig, Terraria.Player self, out int dir, out bool dashing, Player.DashStartAction dashStartAction = null) {
 			dir = 0;
 			dashing = false;
@@ -19,38 +16,32 @@ namespace DashKeybind {
 					case -1:
 						if (self.controlRight) {
 							dir = 1;
-							dashing = true;
-							self.timeSinceLastDashStarted = 0;
 							if (dashStartAction == null)
 								return;
-							dashStartAction(1);
 						}
 						else {
 							dir = -1;
-							dashing = true;
-							self.timeSinceLastDashStarted = 0;
 							if (dashStartAction == null)
 								return;
-							dashStartAction(-1);
 						}
+						dashing = true;
+						self.timeSinceLastDashStarted = 0;
+						dashStartAction(dir);
 						break;
 					case 1:
 						if (self.controlLeft) {
 							dir = -1;
-							dashing = true;
-							self.timeSinceLastDashStarted = 0;
 							if (dashStartAction == null)
 								return;
-							dashStartAction(-1);
 						}
 						else {
 							dir = 1;
-							dashing = true;
-							self.timeSinceLastDashStarted = 0;
 							if (dashStartAction == null)
 								return;
-							dashStartAction(1);
 						}
+						dashing = true;
+						self.timeSinceLastDashStarted = 0;
+						dashStartAction(dir);
 						break;
 				}
 			}
@@ -66,8 +57,10 @@ namespace DashKeybind {
 	}
 	[JITWhenModsEnabled("CalamityMod")]
 	public sealed class CalamityDetour : ModSystem {
+		public static ModKeybind GSDash;
 		public override void Load() {
 			if (!ModLoader.HasMod("CalamityMod")) return;
+			GSDash = KeybindLoader.RegisterKeybind (Mod, "God Slayer Dash", "Mouse3");
 			PatchCalamity();
 		}
 		private static void PatchCalamity() {
@@ -83,31 +76,67 @@ namespace DashKeybind {
 					case -1:
 						if (self.Player.controlRight) {
 							direction = CalamityMod.Enums.DashDirection.Right;
-							result = true;
-							self.dashTimeMod=0;
 						}
-						else {
-							direction = CalamityMod.Enums.DashDirection.Left;
-							result = true;
-							self.dashTimeMod=0;
-						}
+						else direction = CalamityMod.Enums.DashDirection.Left;
+						result = true;
+						self.dashTimeMod = 0;
 						break;
 					case 1:
 						if (self.Player.controlLeft) {
 							direction = CalamityMod.Enums.DashDirection.Left;
-							result = true;
-							self.dashTimeMod=0;
 						}
-						else {
-							direction = CalamityMod.Enums.DashDirection.Right;
-							result = true;
-							self.dashTimeMod=0;
-						}
+						else direction = CalamityMod.Enums.DashDirection.Right;
+						result = true;
+						self.dashTimeMod = 0;
 						break;
 				}
 			}
 			return result;
 		}
-		private delegate bool orig_HandleOmnidirectionalDash(CalamityMod.CalPlayer.CalamityPlayer self, out CalamityMod.Enums.DashDirection direction)
+		private delegate bool orig_HandleOmnidirectionalDash(CalamityMod.CalPlayer.CalamityPlayer self, out CalamityMod.Enums.DashDirection direction);
+		private static bool ODDashPatch(orig_HandleOmnidirectionalDash orig, CalamityMod.CalPlayer.CalamityPlayer self, out CalamityMod.Enums.DashDirection direction) {
+			direction = CalamityMod.Enums.DashDirection.Directionless;
+			bool result = false;
+			if (CalamityDetour.GSDash.JustPressed) {
+				if (!(self.Player.controlLeft && self.Player.controlRight) && (self.Player.controlUp || self.Player.controlDown)) {
+					if (self.Player.controlUp)
+						direction = CalamityMod.Enums.DashDirection.Up;
+					if (self.Player.controlDown) {
+						direction = CalamityMod.Enums.DashDirection.Down;
+						self.Player.maxFallSpeed = 50f;
+					}
+					result = true;
+					self.dashTimeMod = 0;
+				}
+				else switch (self.Player.direction) {
+					case -1:
+						if (self.Player.controlUp && self.Player.controlRight)
+							direction = CalamityMod.Enums.DashDirection.UpRight;
+						else if (self.Player.controlRight)
+							direction = CalamityMod.Enums.DashDirection.Right;
+						else if (self.Player.controlDown && self.Player.controlRight)
+							direction = CalamityMod.Enums.DashDirection.DownRight;
+						else direction = CalamityMod.Enums.DashDirection.Left;
+						result = true;
+						self.dashTimeMod = 0;
+						break;
+					case 1:
+						if (self.Player.controlUp && self.Player.controlLeft)
+							direction = CalamityMod.Enums.DashDirection.UpLeft;
+						else if (self.Player.controlLeft)
+							direction = CalamityMod.Enums.DashDirection.Left;
+						else if (self.Player.controlDown && self.Player.controlLeft) {
+							direction = CalamityMod.Enums.DashDirection.DownLeft;
+							self.Player.maxFallSpeed = 50f;
+						}
+						else direction = CalamityMod.Enums.DashDirection.Right;
+						result = true;
+						self.dashTimeMod = 0;
+						break;
+				}
+			}
+			Main.NewText(direction);
+			return result;
+		}
 	}
 }
