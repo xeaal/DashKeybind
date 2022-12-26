@@ -10,42 +10,27 @@ using Mono;
 namespace DashKeybind {
 	public class DashKeybind : Mod {
 		public static ModKeybind Dash;
-		private void VanillaDashPatch(On.Terraria.Player.orig_DoCommonDashHandle orig, Terraria.Player self, out int dir, out bool dashing, Player.DashStartAction dashStartAction = null) {
+		private void VanillaDashPatch(On.Terraria.Player.orig_DoCommonDashHandle orig, Terraria.Player self, out int dir, out bool dashing, Player.DashStartAction dashStartAction) {
 			dir = 0;
 			dashing = false;
 			if (DashKeybind.Dash.JustPressed) {
 				switch(self.direction) {
 					case -1:
-						if (self.controlRight) {
+						if (self.controlRight)
 							dir = 1;
-							if (dashStartAction == null)
-								return;
-						}
-						else {
+						else
 							dir = -1;
-							if (dashStartAction == null)
-								return;
-						}
-						dashing = true;
-						self.timeSinceLastDashStarted = 0;
-						dashStartAction(dir);
 						break;
 					case 1:
-						if (self.controlLeft) {
+						if (self.controlLeft)
 							dir = -1;
-							if (dashStartAction == null)
-								return;
-						}
-						else {
+						else
 							dir = 1;
-							if (dashStartAction == null)
-								return;
-						}
-						dashing = true;
-						self.timeSinceLastDashStarted = 0;
-						dashStartAction(dir);
 						break;
 				}
+				dashing = true;
+				self.timeSinceLastDashStarted = 0;
+				dashStartAction?.Invoke(dir);
 			}
 		}
 		public override void Load() {
@@ -76,22 +61,20 @@ namespace DashKeybind {
 			if (DashKeybind.Dash.JustPressed) {
 				switch(self.Player.direction) {
 					case -1:
-						if (self.Player.controlRight) {
+						if (self.Player.controlRight)
 							direction = CalamityMod.Enums.DashDirection.Right;
-						}
-						else direction = CalamityMod.Enums.DashDirection.Left;
-						result = true;
-						self.dashTimeMod = 0;
+						else
+							direction = CalamityMod.Enums.DashDirection.Left;
 						break;
 					case 1:
-						if (self.Player.controlLeft) {
+						if (self.Player.controlLeft)
 							direction = CalamityMod.Enums.DashDirection.Left;
-						}
-						else direction = CalamityMod.Enums.DashDirection.Right;
-						result = true;
-						self.dashTimeMod = 0;
+						else
+							direction = CalamityMod.Enums.DashDirection.Right;
 						break;
 				}
+				result = true;
+				self.dashTimeMod = 0;
 			}
 			return result;
 		}
@@ -107,8 +90,6 @@ namespace DashKeybind {
 						direction = CalamityMod.Enums.DashDirection.Down;
 						self.Player.maxFallSpeed = 50f;
 					}
-					result = true;
-					self.dashTimeMod = 0;
 				}
 				else switch (self.Player.direction) {
 					case -1:
@@ -118,9 +99,8 @@ namespace DashKeybind {
 							direction = CalamityMod.Enums.DashDirection.Right;
 						else if (self.Player.controlDown && self.Player.controlRight)
 							direction = CalamityMod.Enums.DashDirection.DownRight;
-						else direction = CalamityMod.Enums.DashDirection.Left;
-						result = true;
-						self.dashTimeMod = 0;
+						else
+							direction = CalamityMod.Enums.DashDirection.Left;
 						break;
 					case 1:
 						if (self.Player.controlUp && self.Player.controlLeft)
@@ -131,11 +111,12 @@ namespace DashKeybind {
 							direction = CalamityMod.Enums.DashDirection.DownLeft;
 							self.Player.maxFallSpeed = 50f;
 						}
-						else direction = CalamityMod.Enums.DashDirection.Right;
-						result = true;
-						self.dashTimeMod = 0;
+						else
+							direction = CalamityMod.Enums.DashDirection.Right;
 						break;
 				}
+				result = true;
+				self.dashTimeMod = 0;
 			}
 			return result;
 		}
